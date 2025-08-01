@@ -1,48 +1,37 @@
-const items = document.querySelectorAll('.list .item');
-const indicators = document.querySelectorAll('.indicators ul li');
-let currentIndex = 0;
+let prevButton = document.getElementById('prev')
+let nextButton = document.getElementById('next')
+let container = document.querySelector('.container')
+let items = container.querySelectorAll('.list .item')
+let indicator = document.querySelector('.indicators')
+let dots = indicator.querySelectorAll('ul li')
+let list = container.querySelector('.list')
 
-// Função para atualizar o slide ativo
-function updateSlide(index) {
-    items.forEach((item, i) => {
-        item.classList.toggle('active', i === index);
-        item.style.opacity = i === index ? '1' : '0';
-    });
+let active = 0
+let firstPosition = 0
+let lastPosition = items.length - 1
 
-    indicators.forEach((indicator, i) => {
-        indicator.classList.toggle('active', i === index);
-    });
+function setSlider() {
+ 
+  let itemOld = container.querySelector('.list .item.active')
+  itemOld.classList.remove('active')
+
+  let dotsOld = indicator.querySelector('ul li.active')
+  dotsOld.classList.remove('active')
+  dots[active].classList.add('active')
+
+  indicator.querySelector('.number').innerHTML = '0' + (active + 1)
 }
 
-// Navegar para o próximo slide
-function nextSlide() {
-    currentIndex = (currentIndex + 1) % items.length;
-    updateSlide(currentIndex);
+nextButton.onclick = () => {
+  list.style.setProperty('--calculation', 1)
+  active = active + 1 > lastPosition ? 0 : active + 1
+  setSlider()
+  items[active].classList.add('active')
 }
 
-// Navegar para o slide anterior
-function prevSlide() {
-    currentIndex = (currentIndex - 1 + items.length) % items.length;
-    updateSlide(currentIndex);
+prevButton.onclick = () => {
+  list.style.setProperty('--calculation', -1)
+  active = active - 1 < firstPosition ? lastPosition : active - 1
+  setSlider()
+  items[active].classList.add('active')
 }
-
-// Adicionar eventos aos botões de navegação
-document.querySelector('.arrows button:nth-child(1)').addEventListener('click', prevSlide);
-document.querySelector('.arrows button:nth-child(2)').addEventListener('click', nextSlide);
-
-// Inicializar o primeiro slide
-updateSlide(currentIndex);
-
-// Adicionar efeito de hover nos carros
-const carImages = document.querySelectorAll('.car-img .img');
-
-carImages.forEach((img) => {
-    img.addEventListener('mouseenter', () => {
-        img.style.transform = 'rotate(0deg)';
-        img.style.transition = 'transform 0.5s';
-    });
-
-    img.addEventListener('mouseleave', () => {
-        img.style.transform = 'rotate(-23deg)';
-    });
-});
