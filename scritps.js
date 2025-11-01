@@ -11,13 +11,34 @@ let firstPosition = 0
 let lastPosition = items.length - 1
 
 function setSlider() {
- 
   let itemOld = container.querySelector('.list .item.active')
-  itemOld.classList.remove('active')
+  if (itemOld) {
+    itemOld.classList.remove('active')
+    // Reset animations for the old item
+    const oldContent = itemOld.querySelectorAll('.content *')
+    oldContent.forEach(el => {
+      el.style.transform = 'translateX(100px)'
+      el.style.opacity = '0'
+    })
+  }
 
   let dotsOld = indicator.querySelector('ul li.active')
   dotsOld.classList.remove('active')
   dots[active].classList.add('active')
+
+  // Add active class to new item
+  items[active].classList.add('active')
+
+  // Animate content elements
+  const newContent = items[active].querySelectorAll('.content *')
+  setTimeout(() => {
+    newContent.forEach((el, index) => {
+      setTimeout(() => {
+        el.style.transform = 'translateX(0)'
+        el.style.opacity = '1'
+      }, index * 100)
+    })
+  }, 100)
 
   indicator.querySelector('.number').innerHTML = '0' + (active + 1)
 }
