@@ -59,13 +59,13 @@ section {
 
                 & img {
                     width: 100%;
-                    transform: rotate(-30deg);
+                    transform: rotate(-40deg -25deg);
                 }
 
                 &::before {
                     content: '';
                     position: absolute;
-                    background-color: #000;
+                    background-color: #0000009f;
                     width: 100%;
                     height: 100px;
                     top: 150%;
