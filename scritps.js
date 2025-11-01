@@ -10,6 +10,18 @@ let active = 0
 let firstPosition = 0
 let lastPosition = items.length - 1
 
+// Add initial animation classes
+document.addEventListener('DOMContentLoaded', function() {
+    // Add staggered animations to content elements
+    const activeItem = document.querySelector('.item.active');
+    if (activeItem) {
+        const contentElements = activeItem.querySelectorAll('.content > *');
+        contentElements.forEach((el, index) => {
+            el.style.animationDelay = `${0.3 + index * 0.2}s`;
+        });
+    }
+});
+
 function setSlider() {
   let itemOld = container.querySelector('.list .item.active')
   if (itemOld) {
@@ -23,24 +35,41 @@ function setSlider() {
   }
 
   let dotsOld = indicator.querySelector('ul li.active')
-  dotsOld.classList.remove('active')
-  dots[active].classList.add('active')
+  if (dotsOld) {
+    dotsOld.classList.remove('active')
+  }
+  
+  if (dots[active]) {
+    dots[active].classList.add('active')
+  }
 
   // Add active class to new item
   items[active].classList.add('active')
 
-  // Animate content elements
-  const newContent = items[active].querySelectorAll('.content *')
-  setTimeout(() => {
-    newContent.forEach((el, index) => {
-      setTimeout(() => {
-        el.style.transform = 'translateX(0)'
-        el.style.opacity = '1'
-      }, index * 100)
-    })
-  }, 100)
+  // Animate content elements with staggered delays
+  const newContent = items[active].querySelectorAll('.content > *')
+  newContent.forEach((el, index) => {
+    // Reset any existing animations
+    el.style.animation = 'none';
+    
+    // Trigger reflow
+    void el.offsetWidth;
+    
+    // Apply new animation with delay
+    el.style.animation = null;
+    el.style.animationDelay = `${index * 0.2}s`;
+  });
 
-  indicator.querySelector('.number').innerHTML = '0' + (active + 1)
+  // Update indicator number
+  const numberElement = indicator.querySelector('.number');
+  if (numberElement) {
+    numberElement.innerHTML = '0' + (active + 1);
+    
+    // Add pulse effect when changing
+    numberElement.style.animation = 'none';
+    void numberElement.offsetWidth;
+    numberElement.style.animation = 'numberPulse 0.5s';
+  }
 }
 
 nextButton.onclick = () => {
@@ -56,3 +85,30 @@ prevButton.onclick = () => {
   setSlider()
   items[active].classList.add('active')
 }
+
+// Add keyboard navigation
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'ArrowLeft') {
+        prevButton.click();
+    } else if (e.key === 'ArrowRight') {
+        nextButton.click();
+    }
+});
+
+// Add hover effects to buttons
+const infoButtons = document.querySelectorAll('.information');
+infoButtons.forEach(button => {
+    button.addEventListener('mouseenter', function() {
+        this.style.transform = 'translateY(-3px)';
+        this.style.boxShadow = '0 5px 15px rgba(190, 255, 27, 0.4)';
+    });
+    
+    button.addEventListener('mouseleave', function() {
+        this.style.transform = 'translateY(0)';
+        this.style.boxShadow = 'none';
+    });
+    
+    button.addEventListener('mousedown', function() {
+        this.style.transform = 'translateY(1px)';
+    });
+});
