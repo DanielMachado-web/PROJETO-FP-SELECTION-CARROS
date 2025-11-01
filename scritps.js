@@ -5,13 +5,26 @@ let items = container.querySelectorAll('.list .item')
 let indicator = document.querySelector('.indicators')
 let dots = indicator.querySelectorAll('ul li')
 let list = container.querySelector('.list')
+let section = document.querySelector('section')
 
 let active = 0
 let firstPosition = 0
 let lastPosition = items.length - 1
 
+// Define background colors for each car
+const backgroundColors = [
+    'linear-gradient(135deg, #470964, #791fd3, #2c0442)',
+    'linear-gradient(135deg, #d31f1f, #ff2b2b, #8b0000)',
+    'linear-gradient(135deg, #0a5e0a, #0bdb0b, #044d04)'
+]
+
 // Add initial animation classes
 document.addEventListener('DOMContentLoaded', function() {
+    // Set initial background
+    if (section) {
+        section.style.background = backgroundColors[active]
+    }
+    
     // Add staggered animations to content elements
     const activeItem = document.querySelector('.item.active');
     if (activeItem) {
@@ -69,6 +82,12 @@ function setSlider() {
     numberElement.style.animation = 'none';
     void numberElement.offsetWidth;
     numberElement.style.animation = 'numberPulse 0.5s';
+  }
+  
+  // Change background color with transition
+  if (section) {
+    section.style.transition = 'background 0.8s ease-in-out';
+    section.style.background = backgroundColors[active];
   }
 }
 
